@@ -1,9 +1,9 @@
 const cacheName = "psgaming-JungleRun-0.1";
 const contentToCache = [
-    "Build/b5542876e79cfc662713621276922f38.loader.js",
+    "Build/4e71ad2078ecfbac868d26bee44c30f3.loader.js",
     "Build/7ea6583c85d2d24dae9df77a99689a6d.framework.js.unityweb",
-    "Build/e91ca256513e93fe721a04c040c4da33.data.unityweb",
-    "Build/a25dac57e9deae6c2375ad152739a165.wasm.unityweb",
+    "Build/03e0b5b252767c1c75ad0ebb9a9bbe13.data.unityweb",
+    "Build/795b96745531b061f14d82e049ade5ef.wasm.unityweb",
     "TemplateData/style.css"
 
 ];
