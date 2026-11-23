@@ -1,3 +1,6 @@
+/// Processes all unity log messages and converts unity rich text to css styled console messages
+/// from https://github.com/JohannesDeml/UnityWebGL-LoadingTest
+
 function setupConsoleLogPipe() {
   // Store actual console log functions
   let defaultConsoleLog = console.log;
