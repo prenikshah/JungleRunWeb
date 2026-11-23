@@ -1,0 +1,37 @@
+# Unity WebGL Configuration for Brotli compressed builds (.unityweb)
+
+<IfModule mod_mime.c>
+  AddType application/wasm .wasm
+  AddType application/javascript .js
+  AddType application/octet-stream .data
+  AddType application/octet-stream .unityweb
+  AddType image/x-icon .ico
+  AddType image/svg+xml .svg
+</IfModule>
+
+<IfModule mod_headers.c>
+  # Tell the browser that .unityweb files are already compressed with Brotli
+  <FilesMatch "\.framework\.js\.unityweb$">
+    Header set Content-Type "application/javascript"
+    Header set Content-Encoding "br"
+  </FilesMatch>
+  <FilesMatch "\.data\.unityweb$">
+    Header set Content-Type "application/octet-stream"
+    Header set Content-Encoding "br"
+  </FilesMatch>
+  <FilesMatch "\.wasm\.unityweb$">
+    Header set Content-Type "application/wasm"
+    Header set Content-Encoding "br"
+  </FilesMatch>
+
+  # Aggressive caching for hashed immutable build assets (enables instant repeat visits)
+  <FilesMatch "\.(unityweb|wasm|data)$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.loader\.js$">
+    Header set Cache-Control "public, max-age=31536000, immutable"
+  </FilesMatch>
+  <FilesMatch "\.html$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </FilesMatch>
+</IfModule>
