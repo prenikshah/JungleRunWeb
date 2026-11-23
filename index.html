@@ -58,11 +58,10 @@
       inset: 0;
       width: 100%;
       height: 100%;
-      background-color: #0d1117;
+      background-color: #0b0e14;
       display: flex;
       align-items: center;
       justify-content: center;
-      flex-direction: column;
       z-index: 99;
       opacity: 1;
       visibility: visible;
@@ -76,41 +75,38 @@
       pointer-events: none;
     }
 
-    /* Loading card */
-    .loading-content {
+    /* Loader container */
+    .loading-wrapper {
       display: flex;
       flex-direction: column;
       align-items: center;
-      width: 90%;
-      max-width: 360px;
-      gap: 16px;
+      justify-content: center;
+      gap: 22px;
     }
 
-    /* Optional favicon display if desired on the loading screen */
-    .loading-favicon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      margin-bottom: 4px;
-      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
-      animation: pulse 2s infinite ease-in-out;
+    /* Minimal circular loader */
+    .loading-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #10b981;
+      border-radius: 50%;
+      animation: spin 0.85s linear infinite;
     }
 
-    .loading-title {
-      font-size: 22px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      color: #f1f5f9;
-      text-transform: uppercase;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     /* Outer progress bar track */
     #unity-loading-bar {
       position: relative;
-      width: 100%;
-      height: 8px;
-      background-color: rgba(255, 255, 255, 0.1);
+      width: 240px;
+      max-width: 70vw;
+      height: 6px;
+      background-color: rgba(255, 255, 255, 0.12);
       border-radius: 9999px;
       overflow: hidden;
       box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -127,7 +123,7 @@
       border-radius: 9999px;
       transform-origin: 0% 50%;
       transform: scaleX(0.01);
-      box-shadow: 0 0 12px rgba(16, 185, 129, 0.55);
+      box-shadow: 0 0 10px rgba(16, 185, 129, 0.55);
       will-change: transform;
     }
 
@@ -152,32 +148,6 @@
       0% { transform: translateX(-100%); }
       100% { transform: translateX(100%); }
     }
-
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); opacity: 0.95; }
-      50% { transform: scale(1.05); opacity: 1; }
-    }
-
-    /* Status row: Text & Percentage */
-    .loading-info {
-      width: 100%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 13px;
-      font-weight: 500;
-      color: #94a3b8;
-    }
-
-    #loading-status {
-      letter-spacing: 0.2px;
-    }
-
-    #loading-percentage {
-      font-variant-numeric: tabular-nums;
-      color: #cbd5e1;
-      font-weight: 600;
-    }
   </style>
 </head>
 
@@ -186,17 +156,12 @@
     <canvas id="unity-canvas" tabindex="-1"></canvas>
   </div>
 
+  <!-- Minimal Loader & Progress (No text, title, or description) -->
   <div id="unity-loading-container">
-    <div class="loading-content">
-      <!-- Loading logo removed as requested. To show your favicon above the bar, uncomment below: -->
-      <!-- <img src="favicon.ico" class="loading-favicon" alt="JungleRun"> -->
-      <div class="loading-title">JungleRun</div>
+    <div class="loading-wrapper">
+      <div class="loading-spinner"></div>
       <div id="unity-loading-bar">
         <div id="unity-loading-bar-inner"></div>
-      </div>
-      <div class="loading-info">
-        <span id="loading-status">Loading game assets...</span>
-        <span id="loading-percentage">0%</span>
       </div>
     </div>
   </div>
@@ -224,8 +189,6 @@
     var canvas = document.querySelector("#unity-canvas");
     var loadingContainer = document.querySelector("#unity-loading-container");
     var loadingBar = document.querySelector("#unity-loading-bar-inner");
-    var loadingStatus = document.querySelector("#loading-status");
-    var loadingPercentage = document.querySelector("#loading-percentage");
 
     var targetProgress = 0;
     var displayedProgress = 0;
@@ -257,23 +220,6 @@
       var clampedProgress = Math.min(1.0, Math.max(0.01, displayedProgress));
       loadingBar.style.transform = "scaleX(" + clampedProgress + ")";
 
-      var pct = Math.min(100, Math.round(displayedProgress * 100));
-      if (loadingPercentage) {
-        loadingPercentage.textContent = pct + "%";
-      }
-
-      if (loadingStatus) {
-        if (isLoaded || displayedProgress >= 0.99) {
-          loadingStatus.textContent = "Ready!";
-        } else if (displayedProgress >= 0.9) {
-          loadingStatus.textContent = "Preparing game engine...";
-        } else if (displayedProgress >= 0.5) {
-          loadingStatus.textContent = "Loading WebAssembly...";
-        } else {
-          loadingStatus.textContent = "Downloading assets...";
-        }
-      }
-
       if (!isLoaded || displayedProgress < 0.999) {
         animFrame = requestAnimationFrame(renderProgress);
       }
@@ -297,15 +243,11 @@
           setTimeout(function() {
             loadingContainer.style.display = "none";
             if (animFrame) cancelAnimationFrame(animFrame);
-          }, 550);
+          }, 500);
         }
-      }, 50);
+      }, 40);
     }).catch(function(message) {
       console.error(message);
-      if (loadingStatus) {
-        loadingStatus.textContent = "Failed to load game";
-        loadingStatus.style.color = "#f87171";
-      }
       alert(message);
     });
   </script>
